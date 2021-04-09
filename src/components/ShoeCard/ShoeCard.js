@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components/macro';
+import React from "react";
+import styled from "styled-components/macro";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe, formatFlag } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -30,10 +30,21 @@ const ShoeCard = ({
     : isNewShoe(releaseDate)
       ? 'new-release'
       : 'default'
+  const flagText = formatFlag(variant);
 
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
+        {flagText != null ? (
+          <Flag
+            style={{
+              "--bg-color":
+                variant === "on-sale" ? COLORS.primary : COLORS.secondary,
+            }}
+          >
+            {flagText}
+          </Flag>
+        ) : null}
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
@@ -43,19 +54,36 @@ const ShoeCard = ({
           <Price>{formatPrice(price)}</Price>
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {typeof salePrice === "number" ? (
+            <SalePrice>{formatPrice(salePrice)}</SalePrice>
+          ) : null}
         </Row>
       </Wrapper>
     </Link>
   );
 };
 
+const Flag = styled.span`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  background-color: var(--bg-color);
+  color: ${COLORS.white};
+  padding: 4px 8px 4px 8px;
+  font-size: ${14 / 16}rem;
+  border-radius: 2px;
+`;
+
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  position: relative;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
@@ -65,6 +93,8 @@ const Image = styled.img``;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
