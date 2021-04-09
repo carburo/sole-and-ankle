@@ -3,9 +3,9 @@ import styled from 'styled-components/macro';
 
 import { WEIGHTS } from '../../constants';
 
-const Logo = (props) => {
+const Logo = ({ className, ...props }) => {
   return (
-    <Link href="/">
+    <Link href="/" className={className}>
       <Wrapper {...props}>Sole&amp;Ankle</Wrapper>
     </Link>
   );
